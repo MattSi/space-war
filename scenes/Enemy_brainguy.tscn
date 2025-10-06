@@ -1,0 +1,63 @@
+[gd_scene load_steps=10 format=3 uid="uid://c0hl02hb7h31x"]
+
+[ext_resource type="Texture2D" uid="uid://dvm1btf400de6" path="res://assets/spritesheets/oga-swm-brainguy-alpha.png" id="1_i1rcd"]
+[ext_resource type="Script" uid="uid://crh311awe0dap" path="res://scripts/enemy_brainguy.gd" id="1_vk0sh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vk0sh"]
+atlas = ExtResource("1_i1rcd")
+region = Rect2(0, 0, 91, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tekfq"]
+atlas = ExtResource("1_i1rcd")
+region = Rect2(91, 0, 91, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5sd0f"]
+atlas = ExtResource("1_i1rcd")
+region = Rect2(182, 0, 91, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jj6lg"]
+atlas = ExtResource("1_i1rcd")
+region = Rect2(273, 0, 91, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1q0b8"]
+atlas = ExtResource("1_i1rcd")
+region = Rect2(364, 0, 91, 74)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fmnd0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vk0sh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tekfq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5sd0f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jj6lg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1q0b8")
+}],
+"loop": true,
+"name": &"normal",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ltlfu"]
+size = Vector2(35, 26)
+
+[node name="Enemy_BrainGuy" type="Area2D"]
+script = ExtResource("1_vk0sh")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_fmnd0")
+animation = &"normal"
+autoplay = "normal"
+frame_progress = 0.4599182
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -17)
+shape = SubResource("RectangleShape2D_ltlfu")

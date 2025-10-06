@@ -1,9 +1,11 @@
 extends CharacterBody2D
 
 
-const SPEED: float = 300.0
-const JUMP_VELOCITY: float = -600.0
-const JUMP_CUT_MULTIPLIER : float = 0.5
+@export var SPEED: float = 300.0
+@export var JUMP_VELOCITY: float = -600.0
+@export var JUMP_CUT_MULTIPLIER : float = 0.5
+@export var COYOTE_TIME: float = 0.12
+@export var JUMP_BUFFER_TIME: float = 0.12
 const MAX_JUMPS: int = 2
 
 
@@ -12,18 +14,48 @@ const MAX_JUMPS: int = 2
 
 var jumps_left: int = MAX_JUMPS
 var was_on_floor:bool = false
+var is_dying: bool  = false
+var coyote_time_left:float = 0.0
+var jump_buffer_left:float = 0.0
 
 func _physics_process(delta: float) -> void:
+	if is_dying:
+		velocity.x = move_toward(velocity.x, 0, 5000.0*delta)
+		velocity.y = move_toward(velocity.y, 0, 5000.0*delta)
+		move_and_slide()
+		return
+
+	if Input.is_action_just_pressed("test_action"):
+		_start_die()
+		return		
+	
 	was_on_floor = is_on_floor()
 	
+	# Update coyote time
+	if is_on_floor():
+		coyote_time_left = COYOTE_TIME
+	else:
+		coyote_time_left = max(coyote_time_left - delta, 0.0)
+		
+	# JUMP BUFFER 
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer_left = JUMP_BUFFER_TIME
+	else:
+		jump_buffer_left = max(jump_buffer_left-delta, 0.0)
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += 1.5*get_gravity() * delta
 
 	# Handle jump.
-	if Input.is_action_just_pressed("jump") and jumps_left > 0:
+	if jump_buffer_left>0.0 and (is_on_floor() or coyote_time_left>0.0):
 		velocity.y = JUMP_VELOCITY
-		jumps_left -= 1
+		jumps_left = MAX_JUMPS - 1
+		coyote_time_left = 0.0
+		jump_buffer_left = 0.0	
+	elif Input.is_action_just_pressed("jump") and jumps_left>0 and velocity.y < 0.0:
+			velocity.y = JUMP_VELOCITY
+			jumps_left -= 1
+			jump_buffer_left = 0.0
 		
 	if Input.is_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= JUMP_CUT_MULTIPLIER
@@ -43,8 +75,14 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	if not was_on_floor and is_on_floor():
-		jumps_left = MAX_JUMPS
+		if jump_buffer_left > 0.0:
+			velocity.y = JUMP_VELOCITY
+			jumps_left = MAX_JUMPS - 1
+			jump_buffer_left = 0.0
+		else:
+			jumps_left = MAX_JUMPS
 			
+	#Animation
 	if is_on_floor():
 		if direction == 0:
 			animated_sprite_2d.play("idle") 
@@ -53,5 +91,27 @@ func _physics_process(delta: float) -> void:
 	else:
 		animated_sprite_2d.play("jump")
 		
-	# TODO ADD COYOTE TIME
+	
 	# TODO ADD JUMP BUFFER
+
+
+func _on_animated_sprite_2d_animation_finished() -> void:
+	if is_dying and animated_sprite_2d.animation == "die":
+		is_dying = false
+		jumps_left = MAX_JUMPS
+		
+		if is_on_floor():
+			var direction := Input.get_axis("move_left", "move_right")
+			if direction == 0:
+				animated_sprite_2d.play("idle")
+			else:
+				animated_sprite_2d.play("run")
+		else:
+			animated_sprite_2d.play("jump")
+
+func _start_die()->void:
+	is_dying = true
+	velocity = Vector2.ZERO
+	
+	animated_sprite_2d.play("die")
+	
