@@ -128,8 +128,8 @@ func _play_angle_anim(dir: Vector2)->void:
 	var deg:= rad_to_deg(atan2(-dir.y, dir.x))
 	deg = int(ceil(deg+360.0)) % 360
 	
-	var label:=_sector_label_from_angle(deg)
 	
+	var label:=_sector_label_from_angle(deg)	
 	var base:="idle_"
 	_safe_play(base+label)
 	
