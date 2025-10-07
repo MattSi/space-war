@@ -8,7 +8,10 @@ extends CharacterBody2D
 @export var JUMP_BUFFER_TIME: float = 0.12
 const MAX_JUMPS: int = 2
 
-
+@export var AIM_DEADZONE:float = 0.25
+@export var AIM_SECTORS:int = 16
+@export var USE_MIRROS_FRAMES:bool = true
+@export var RUN_WHEN_AIMING:bool = false
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -18,7 +21,10 @@ var is_dying: bool  = false
 var coyote_time_left:float = 0.0
 var jump_buffer_left:float = 0.0
 
+var _last_aim_dir:Vector2 = Vector2.RIGHT
+
 func _physics_process(delta: float) -> void:
+	var direction:float = 0.0
 	if is_dying:
 		velocity.x = move_toward(velocity.x, 0, 5000.0*delta)
 		velocity.y = move_toward(velocity.y, 0, 5000.0*delta)
@@ -60,17 +66,30 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= JUMP_CUT_MULTIPLIER
 
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction := Input.get_axis("move_left", "move_right")	
-	if direction:
-		velocity.x = direction * SPEED
+	var lt:=Input.get_action_strength("aim_lt") >=0.5
+	var aim_dir:=_last_aim_dir
+	
+	if lt:
+		var ls := Input.get_vector("mv_left", "mv_right", "mv_up", "mv_down")
+		if ls.length() >= AIM_DEADZONE:
+			aim_dir = ls.normalized()
+			_last_aim_dir = aim_dir
+		
+		var move_axis :=0.0
+		if RUN_WHEN_AIMING:
+			move_axis = Input.get_axis("move_left", "move_right")
+		velocity.x = move_axis * SPEED
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-	if direction > 0:
-		animated_sprite_2d.flip_h = false
-	elif direction < 0:
-		animated_sprite_2d.flip_h = true
+		direction = Input.get_axis("move_left","move_right")
+		if direction != 0.0:
+			velocity.x = direction * SPEED
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+		
+		if direction > 0:
+			animated_sprite_2d.flip_h = false
+		elif direction < 0:
+			animated_sprite_2d.flip_h = true
 	
 	move_and_slide()
 	
@@ -83,17 +102,50 @@ func _physics_process(delta: float) -> void:
 			jumps_left = MAX_JUMPS
 			
 	#Animation
-	if is_on_floor():
-		if direction == 0:
-			animated_sprite_2d.play("idle") 
-		else:
-			animated_sprite_2d.play("run")
+	if lt:
+		_play_angle_anim(aim_dir)
 	else:
-		animated_sprite_2d.play("jump")
-		
+		direction = Input.get_axis("move_left", "move_right")
+		if is_on_floor():
+			if direction == 0:
+				_safe_play("idle") 
+			else:
+				_safe_play("run")
+		else:
+			_safe_play("jump")
+
+	var rt:=Input.get_action_strength("shoot_rt")>=0.5
+	if lt and rt:
+		_shoot(aim_dir)		
 	
 	# TODO ADD JUMP BUFFER
-
+func _shoot(dir:Vector2)->void:
+	pass
+	
+func _play_angle_anim(dir: Vector2)->void:
+	if dir.length() < 0.5:
+		return
+	var deg:= rad_to_deg(atan2(-dir.y, dir.x))
+	deg = int(ceil(deg+360.0)) % 360
+	
+	var label:=_sector_label_from_angle(deg)
+	
+	var base:="idle_"
+	_safe_play(base+label)
+	
+	
+	
+	pass
+func _sector_label_from_angle(deg:int) ->String:
+	var step := 360.0 / float(AIM_SECTORS)
+	var idx := int(floor(((deg + 360) % 360) / step)) % AIM_SECTORS
+	var snapped := int(round(idx * step))
+	return str(snapped)
+	
+func _safe_play(name: String) -> void:
+	if animated_sprite_2d.sprite_frames and animated_sprite_2d.sprite_frames.has_animation(name):
+		if animated_sprite_2d.animation != name:
+			animated_sprite_2d.play(name)
 
 func _on_animated_sprite_2d_animation_finished() -> void:
 	if is_dying and animated_sprite_2d.animation == "die":
