@@ -492,24 +492,26 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ur7pv"]
-size = Vector2(11, 10)
+size = Vector2(8.799999, 12.4)
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 scale = Vector2(5, 5)
-collision_mask = 3
+collision_mask = 52
 script = ExtResource("1_g2els")
 SPEED = 400.0
 COYOTE_TIME = 0.06
 BULLET_SCENE = ExtResource("2_dqkch")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." groups=["Player"]]
+position = Vector2(-1.0000001, -13.200003)
 sprite_frames = SubResource("SpriteFrames_smehm")
 animation = &"shoot_158"
 autoplay = "idle"
 frame_progress = 0.53312284
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 6)
+position = Vector2(0, -8)
+scale = Vector2(0.9999998, 0.9999998)
 shape = SubResource("RectangleShape2D_ur7pv")
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

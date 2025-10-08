@@ -209,7 +209,8 @@ func _shoot(dir:Vector2)->void:
 	get_tree().current_scene.add_child(new_bullet)
 	new_bullet.global_position = global_position + local_position
 	new_bullet.rotation = dir.angle()
-	
+	new_bullet.collision_layer = 20
+	new_bullet.collision_mask = 4
 	
 	if new_bullet.has_method("setup"):
 		new_bullet.call("setup", dir.normalized(), BULLET_SPEED, BULLET_DAMAGE, self)
