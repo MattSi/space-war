@@ -1,6 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://cpmpifwsipxph"]
+[gd_scene load_steps=18 format=3 uid="uid://cpmpifwsipxph"]
 
+[ext_resource type="Script" uid="uid://bn8h6bw2lf7cw" path="res://scripts/enemy_fly_01.gd" id="1_ijk5f"]
 [ext_resource type="Texture2D" uid="uid://pmubkj8pe1ju" path="res://assets/spritesheets/enemy_fly.png" id="1_svk5y"]
+[ext_resource type="Texture2D" uid="uid://5qll5pa25eve" path="res://assets/SpritePack/Sprites/explosion64_2.png" id="3_mmv66"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nhxoo"]
 atlas = ExtResource("1_svk5y")
@@ -26,6 +28,26 @@ region = Rect2(72, 0, 18, 18)
 atlas = ExtResource("1_svk5y")
 region = Rect2(90, 0, 18, 18)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxknt"]
+atlas = ExtResource("3_mmv66")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dtgau"]
+atlas = ExtResource("3_mmv66")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iw1te"]
+atlas = ExtResource("3_mmv66")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7htbq"]
+atlas = ExtResource("3_mmv66")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imfwl"]
+atlas = ExtResource("3_mmv66")
+region = Rect2(256, 0, 64, 64)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_k2gm0"]
 animations = [{
 "frames": [{
@@ -50,18 +72,57 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxknt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dtgau")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iw1te")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7htbq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_imfwl")
+}],
+"loop": true,
+"name": &"explode",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfefq"]
 size = Vector2(11, 11)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_mmv66"]
+radius = 6.0
+
 [node name="Enemy_fly01" type="Area2D"]
 scale = Vector2(3, 3)
+collision_layer = 2
+script = ExtResource("1_ijk5f")
+patrol_center_offset = Vector2(10, 10)
+dive_speed = 300.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_k2gm0")
+animation = &"explode"
 autoplay = "default"
-frame_progress = 0.44803992
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("RectangleShape2D_yfefq")
+
+[node name="ExplosionArea" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea"]
+visible = false
+shape = SubResource("CircleShape2D_mmv66")
+
+[node name="SelfDestruct" type="Timer" parent="."]
+
+[connection signal="timeout" from="SelfDestruct" to="." method="_on_self_destruct_timeout"]
