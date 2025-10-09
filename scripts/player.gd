@@ -28,6 +28,7 @@ const MAX_JUMPS: int = 2
 @export var BULLET_SCENE:PackedScene
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var muzzles:Node = $Muzzles
 
 var jumps_left: int = MAX_JUMPS
 var was_on_floor:bool = false
@@ -39,39 +40,16 @@ var health : set=set_health, get=get_health
 var _health : int = 0
 var _last_aim_dir:Vector2 = Vector2.RIGHT
 var _shoot_cd: float = 0.0
-var _angle_map = {
+
+var flap_h_shoot_mapping ={
 	0:180,
-	23:158,
 	45:135,
-	68:113,
 	90:90,
 	135:45,
-	158:23,
 	180:0,
-	203:338,
 	225:315,
-	248:293,
-	270:270,
-	293:248,
 	315:225,
-	338:203
-}
-@export var MUZZLE_OFFSETS := {
-	0:  Vector2(16,-6),
-	23: Vector2(15,-7),
-	45: Vector2(13,-9),
-	68: Vector2(10,-10),
-	90: Vector2( 8,-11),
-	135:Vector2( 6,-8),
-	158:Vector2( 8,-6),
-	180:Vector2(10,-5),
-	203:Vector2(10,-5),
-	225:Vector2( 8,-6),
-	248:Vector2( 6,-8),
-	270:Vector2( 8,-11),
-	293:Vector2(10,-10),
-	315:Vector2(13,-9),
-	338:Vector2(15,-7)
+	270:270
 }
 
 func get_health()->int:
@@ -178,8 +156,8 @@ func _physics_process(delta: float) -> void:
 	#Animation
 	if lt:
 		if not did_shoot:
-			var angle_anim:int =_play_angle_anim(aim_dir)
-			var anim_pfix:="idle_"
+			var angle_anim:int = _play_angle_anim(aim_dir)
+			var anim_pfix:="idle_"			
 			_safe_play(anim_pfix+str(angle_anim))
 	else:
 		direction = Input.get_axis("move_left", "move_right")
@@ -199,22 +177,39 @@ func _shoot(dir:Vector2)->void:
 		return
 	if dir.length() < 0.5:
 		return
-	_shoot_cd = SHOOT_COOLDOWN
-	var angle_anim:int =_play_angle_anim(dir)
-	var anim_pfix:="shoot_"
 	
+	
+	var angle_anim:int =_play_angle_anim(dir)
+	
+	var muzzle:Marker2D = _get_muzzle_by_angle(angle_anim)
+	if muzzle == null:
+		return	
+	var muzzle_center:Marker2D = muzzles.get_node("Muzzle_Center")
+	var anim_pfix:="shoot_"
+	_shoot_cd = SHOOT_COOLDOWN
 	_safe_play(anim_pfix+str(angle_anim))
-	var local_position :Vector2 = MUZZLE_OFFSETS.get(angle_anim, Vector2(16, -6))
+	
 	var new_bullet:=BULLET_SCENE.instantiate()
+	var shoot_dir = (muzzle.global_position - muzzle_center.global_position).normalized()
+	new_bullet.global_position = muzzle.global_position
 	get_tree().current_scene.add_child(new_bullet)
-	new_bullet.global_position = global_position + local_position
+	
 	new_bullet.rotation = dir.angle()
-	new_bullet.collision_layer = 20
-	new_bullet.collision_mask = 4
+	new_bullet.collision_layer = 2
+	new_bullet.collision_mask = 8
 	
 	if new_bullet.has_method("setup"):
-		new_bullet.call("setup", dir.normalized(), BULLET_SPEED, BULLET_DAMAGE, self)
+		new_bullet.call("setup", shoot_dir.normalized(), BULLET_SPEED, BULLET_DAMAGE, self)
 	
+
+func _get_muzzle_by_angle(angle_deg:int)->Marker2D:
+	if animated_sprite_2d.flip_h:
+		angle_deg = flap_h_shoot_mapping.get(angle_deg)
+	var muzzle_name = "Muzzle_"+str(angle_deg)	
+	if muzzles.has_node(muzzle_name):
+		return muzzles.get_node(muzzle_name)
+	else:
+		return null
 	
 func _muzzle_global_pos(dir:Vector2)->Vector2:
 	return global_position + Vector2(MUZZLE_OFFSET, 0.0).rotated(dir.angle())
@@ -225,21 +220,33 @@ func _ready() -> void:
 func _play_angle_anim(dir: Vector2)->int:
 	if dir.length() < 0.5:
 		return 0
-	var deg:= rad_to_deg(atan2(-dir.y, dir.x))
-	deg = int(fposmod(deg, 360.0))
 	
-	var angle_label:=_sector_label_from_angle(deg)	
-	return angle_label
+	var d:=dir
+	if animated_sprite_2d.flip_h:
+		d.x = -d.x
+	var angle:float = d.angle_to(Vector2.RIGHT)
+	var angle_deg:float = rad_to_deg(angle)
+	if angle_deg < 0:
+		angle_deg += 360
 	
+	if angle_deg > 338 or angle_deg <=23:
+		return 0
+	elif angle_deg>23 and angle_deg <=68:
+		return 45
+	elif angle_deg>68 and angle_deg<=113:
+		return 90
+	elif angle_deg>113 and angle_deg<=158:
+		return 135
+	elif angle_deg>158 and angle_deg<=203:
+		return 180
+	elif angle_deg>203 and angle_deg<=248:
+		return 225
+	elif angle_deg>293 and angle_deg<=338:
+		return 315
+	else:
+		return 270 # Never use this angle
 	
-		
-func _sector_label_from_angle(deg:int) ->int:
-	var step := 360.0 / float(AIM_SECTORS)
-	var idx := int(floor(((deg + 360) % 360) / step)) % AIM_SECTORS
-	var final_angle := int(round(idx * step))
-	if animated_sprite_2d.flip_h == true:
-		final_angle = _angle_map.get(final_angle, 45)
-	return final_angle
+
 	
 func _safe_play(anim_name: String) -> void:
 	if animated_sprite_2d.sprite_frames and animated_sprite_2d.sprite_frames.has_animation(anim_name):

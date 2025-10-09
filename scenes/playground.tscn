@@ -12,7 +12,7 @@
 [node name="Playground" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_hddm4")]
-position = Vector2(53.00006, 242.00003)
+position = Vector2(-519.99994, 248)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(3.8000014, -9.600013)
@@ -26,7 +26,7 @@ position = Vector2(632, 385)
 position = Vector2(530, 316)
 
 [node name="Enemy_BrainGuy" parent="." instance=ExtResource("3_kddj0")]
-position = Vector2(560, 124)
+position = Vector2(769, 128)
 
 [node name="Lighting" parent="." instance=ExtResource("5_mm0a5")]
 position = Vector2(685, 206.99994)
@@ -53,6 +53,6 @@ repeat_times = 50
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D"]
 texture_repeat = 2
-position = Vector2(194, 157.50002)
+position = Vector2(178.49998, 158)
 scale = Vector2(1.5984373, 1.4328125)
 texture = ExtResource("8_mrac1")
