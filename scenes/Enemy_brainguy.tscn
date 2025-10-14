@@ -1,8 +1,25 @@
-[gd_scene load_steps=12 format=3 uid="uid://c0hl02hb7h31x"]
+[gd_scene load_steps=17 format=3 uid="uid://c0hl02hb7h31x"]
 
 [ext_resource type="Texture2D" uid="uid://dvm1btf400de6" path="res://assets/spritesheets/oga-swm-brainguy-alpha.png" id="1_i1rcd"]
 [ext_resource type="Script" uid="uid://crh311awe0dap" path="res://scripts/enemy_brainguy.gd" id="1_vk0sh"]
 [ext_resource type="PackedScene" uid="uid://mrfhm70vyv4r" path="res://scenes/bullet.tscn" id="2_tekfq"]
+[ext_resource type="Texture2D" uid="uid://5qll5pa25eve" path="res://assets/SpritePack/Sprites/explosion64_2.png" id="3_5sd0f"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fmnd0"]
+atlas = ExtResource("3_5sd0f")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ltlfu"]
+atlas = ExtResource("3_5sd0f")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pdxab"]
+atlas = ExtResource("3_5sd0f")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nbl7m"]
+atlas = ExtResource("3_5sd0f")
+region = Rect2(256, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vk0sh"]
 atlas = ExtResource("1_i1rcd")
@@ -26,6 +43,23 @@ region = Rect2(364, 0, 91, 74)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fmnd0"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fmnd0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ltlfu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pdxab")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nbl7m")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_vk0sh")
@@ -63,15 +97,15 @@ bullet_scene = ExtResource("2_tekfq")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 11)
 sprite_frames = SubResource("SpriteFrames_fmnd0")
-animation = &"normal"
+animation = &"explode"
 autoplay = "normal"
-frame_progress = 0.40669402
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, -2)
 shape = SubResource("RectangleShape2D_ltlfu")
 
 [node name="RangeDetector" type="Area2D" parent="."]
+visible = false
 collision_layer = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RangeDetector"]

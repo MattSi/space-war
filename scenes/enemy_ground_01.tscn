@@ -86,6 +86,7 @@ size = Vector2(11, 9)
 collision_layer = 128
 collision_mask = 5
 script = ExtResource("1_sl77f")
+gravity_scale = 2.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-5, -37)

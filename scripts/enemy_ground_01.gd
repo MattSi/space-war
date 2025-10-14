@@ -41,7 +41,7 @@ func _on_range_detector_body_entered(body: Node2D) -> void:
 		if charge_dir ==0:
 			charge_dir = 1
 		state = State.CHARGE
-		charge_time = 0.0
+		charge_time = 0.0		
 		t_explode.stop()
 		t_explode.start()
 
@@ -52,7 +52,8 @@ func _on_range_detector_body_exited(body: Node2D) -> void:
 	
 func _explode()->void:
 	state = State.IDLE
-	velocity = Vector2.ZERO
+	velocity = Vector2.ZERO	
+	AudioManager.play_at(&"explode_enemy", global_position)
 	sprite.play("explode")
 	await sprite.animation_finished
 	queue_free()
@@ -67,6 +68,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		player.take_damage(1)
 		t_explode.stop()
 		velocity	 = Vector2.ZERO
+		AudioManager.play_at(&"explode_enemy", global_position)
 		sprite.play("explode")
 		await sprite.animation_finished
 		queue_free()

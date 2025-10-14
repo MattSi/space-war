@@ -9,6 +9,7 @@ extends Area2D
 @onready var muzzle_right:Marker2D = $Muzzle_Right
 @onready var fire_timer:Timer = $FireTimer
 @onready var range_detector:Area2D = $RangeDetector
+@onready var animated_sprite_2d:AnimatedSprite2D = $AnimatedSprite2D
 
 var _has_target:bool = false
 var _player:Node2D = null
@@ -75,5 +76,10 @@ func _on_range_detector_body_exited(body: Node2D) -> void:
 func take_damage(amount:int)->void:
 	health -= abs(amount)
 	if health <0:
+		await _explode()
 		call_deferred("queue_free")
+	
+func _explode()->void:
+	animated_sprite_2d.play("explode")
+	await  animated_sprite_2d.animation_finished
 	

@@ -101,17 +101,8 @@ func _explode() -> void:
 		var new_coin:=COIN_SCENE.instantiate()
 		new_coin.global_position = global_position
 		get_tree().current_scene.add_child(new_coin)
-	#var shoot_dir = (muzzle.global_position - muzzle_center.global_position).normalized()
-	#new_bullet.global_position = muzzle.global_position
-	#get_tree().current_scene.add_child(new_bullet)
-	#
-	#new_bullet.rotation = dir.angle()
-	#new_bullet.collision_layer = 2
-	#new_bullet.collision_mask = 8
-	#
-	#if new_bullet.has_method("setup"):
-		#new_bullet.call("setup", shoot_dir.normalized(), BULLET_SPEED, BULLET_DAMAGE, self)
-		
+	
+	AudioManager.play_at(&"explode_enemy", global_position)	
 	_state = State.DEAD
 	explosion_area.monitoring = true
 	sprite.play("explode")

@@ -120,10 +120,12 @@ func _physics_process(delta: float) -> void:
 		jumps_left = MAX_JUMPS - 1
 		coyote_time_left = 0.0
 		jump_buffer_left = 0.0	
+		AudioManager.play_at(&"jump", global_position)
 	elif Input.is_action_just_pressed("jump") and jumps_left>0 and velocity.y < 0.0:
 			velocity.y = JUMP_VELOCITY
 			jumps_left -= 1
 			jump_buffer_left = 0.0
+			AudioManager.play_at(&"jump_high", global_position)
 		
 	if Input.is_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= JUMP_CUT_MULTIPLIER
@@ -185,6 +187,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				_safe_play("run")
 		else:
+			
 			_safe_play("jump")
 
 func _shoot(dir:Vector2)->void:
@@ -221,6 +224,7 @@ func _shoot(dir:Vector2)->void:
 		anim_name="powerup"
 	if new_bullet.has_method("setup"):
 		new_bullet.call("setup", shoot_dir.normalized(), BULLET_SPEED, BULLET_DAMAGE,anim_name, self)
+	AudioManager.play_at(&"player_shot", global_position)
 		
 	
 	

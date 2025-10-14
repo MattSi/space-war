@@ -5,8 +5,19 @@ extends Node
 @onready var ui_player:AudioStreamPlayer = $UIPlayer
 @onready var sfx_player:AudioStreamPlayer2D = $SFXPlayer
 
-const MUSIC:={}
-const SFX:={}
+const MUSIC:={
+	&"level1":preload("res://assets/Audio/The Only Thing They Fear Is You.mp3")
+}
+const SFX:={
+	&"jump" :      preload("res://assets/Audio/sfx_jump.ogg"),
+	&"jump_high" : preload("res://assets/Audio/sfx_jump-high.ogg"),
+	&"player_shot": preload("res://assets/Audio/cg1.wav"),
+	&"explode_enemy" : preload("res://assets/Audio/explosionCrunch_000.ogg"),
+	&"explode_player" : preload("res://assets/SpritePack/Sounds/explode.ogg"),
+	&"pickup" : preload("res://assets/Audio/pickup1.ogg"),
+	&"impactMetal" : preload("res://assets/Audio/impactMetal_004.ogg"),
+	&"laser_shot" : preload("res://assets/Audio/laserLarge_000.ogg")
+}
 
 
 func play_music(music_name:StringName)->void:
@@ -15,6 +26,7 @@ func play_music(music_name:StringName)->void:
 		push_warning("Unknown Music: %s" % String(music_name))
 		return
 	music_player.stream = stream
+	music_player.volume_linear = 0.3
 	music_player.play()
 	
 func stop_music(music_name:StringName)->void:
@@ -42,6 +54,7 @@ func play_sfx(sfx_name:StringName)->void:
 	ui_player.play()
 	
 func _ready() -> void:
+	#pass
 	play_music(&"level1")
 		
 		
