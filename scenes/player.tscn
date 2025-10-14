@@ -348,14 +348,13 @@ COYOTE_TIME = 0.06
 BULLET_SCENE = ExtResource("2_dqkch")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." groups=["Player"]]
-position = Vector2(0.39999986, -13)
+position = Vector2(0.4, -13.2)
 sprite_frames = SubResource("SpriteFrames_smehm")
 animation = &"idle_45"
 autoplay = "idle"
 frame_progress = 0.6353594
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, -8)
 scale = Vector2(0.9999998, 0.9999998)
 shape = SubResource("RectangleShape2D_ur7pv")
@@ -395,4 +394,16 @@ scale = Vector2(0.99999994, 0.99999994)
 position = Vector2(13.4, -3.6000001)
 scale = Vector2(0.99999994, 0.99999994)
 
+[node name="SfxHurt" type="AudioStreamPlayer2D" parent="."]
+
+[node name="SfxDead" type="AudioStreamPlayer2D" parent="."]
+
+[node name="IFramesTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="FlashTimer" type="Timer" parent="."]
+wait_time = 0.08
+
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
+[connection signal="timeout" from="IFramesTimer" to="." method="_on_i_frames_timer_timeout"]
+[connection signal="timeout" from="FlashTimer" to="." method="_on_flash_timer_timeout"]

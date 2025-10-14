@@ -1,0 +1,48 @@
+extends Node
+
+
+@onready var music_player: AudioStreamPlayer = $MusicPlayer
+@onready var ui_player:AudioStreamPlayer = $UIPlayer
+@onready var sfx_player:AudioStreamPlayer2D = $SFXPlayer
+
+const MUSIC:={}
+const SFX:={}
+
+
+func play_music(music_name:StringName)->void:
+	var stream:AudioStream = MUSIC.get(music_name, null)
+	if stream == null:
+		push_warning("Unknown Music: %s" % String(music_name))
+		return
+	music_player.stream = stream
+	music_player.play()
+	
+func stop_music(music_name:StringName)->void:
+	music_player.stop();
+	
+func play_at(sfx_name :StringName, world_pos:Vector2)->void:
+	var stream:AudioStream = SFX.get(sfx_name, null)
+	if stream == null:
+		push_warning("Unknown SFX: %s" % String(sfx_name))
+		return
+	var p:=AudioStreamPlayer2D.new()
+	p.bus = sfx_player.bus
+	p.stream = stream
+	p.global_position = world_pos
+	add_child(p)	
+	p.finished.connect(p.queue_free)
+	p.play()
+
+func play_sfx(sfx_name:StringName)->void:
+	var stream:AudioStream = SFX.get(sfx_name, null)
+	if stream == null:
+		push_warning("Unknown SFX: %s" % String(sfx_name))
+		return
+	ui_player.stream = stream
+	ui_player.play()
+	
+func _ready() -> void:
+	play_music(&"level1")
+		
+		
+		

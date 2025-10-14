@@ -89,38 +89,37 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_imfwl")
 }],
-"loop": true,
+"loop": false,
 "name": &"explode",
 "speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfefq"]
-size = Vector2(11, 11)
+size = Vector2(16.583334, 16.083334)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mmv66"]
 radius = 6.0
 
 [node name="Enemy_fly01" type="Area2D"]
 scale = Vector2(3, 3)
-collision_layer = 512
+collision_layer = 8
+collision_mask = 6
 script = ExtResource("1_ijk5f")
 patrol_center_offset = Vector2(10, 10)
 dive_speed = 300.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_k2gm0")
-animation = &"explode"
 autoplay = "default"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
+position = Vector2(0, 0.6666667)
 shape = SubResource("RectangleShape2D_yfefq")
 
 [node name="ExplosionArea" type="Area2D" parent="."]
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea"]
-visible = false
 shape = SubResource("CircleShape2D_mmv66")
 
 [node name="SelfDestruct" type="Timer" parent="."]

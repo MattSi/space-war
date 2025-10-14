@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://da18hmkwbn4no"]
+
+[ext_resource type="Texture2D" uid="uid://df8diymrx0i3v" path="res://assets/spritesheets/direction_sign.png" id="1_shbub"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kd50q"]
+size = Vector2(49, 52)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8yyji"]
+atlas = ExtResource("1_shbub")
+region = Rect2(0, 0, 10, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ge2pc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8yyji")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Sign" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_kd50q")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(5.7, 4.9)
+sprite_frames = SubResource("SpriteFrames_ge2pc")

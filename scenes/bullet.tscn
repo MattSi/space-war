@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://mrfhm70vyv4r"]
+[gd_scene load_steps=18 format=3 uid="uid://mrfhm70vyv4r"]
 
 [ext_resource type="Script" uid="uid://b41quxi5o1sn7" path="res://scripts/bullet.gd" id="1_l5glv"]
 [ext_resource type="Texture2D" uid="uid://yb2ncvvqhjbd" path="res://assets/spritesheets/oga-swm-objectsandenemies-sheet-alpha.png" id="2_eoqba"]
 [ext_resource type="Texture2D" uid="uid://bgexuijontnsw" path="res://assets/spritesheets/oga-swm-fx-sheet-alpha.png" id="2_l5glv"]
+[ext_resource type="Texture2D" uid="uid://b2rfifcy0ntk4" path="res://assets/spritesheets/BigPencil.png" id="4_eoqba"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2abla"]
 size = Vector2(5.333333, 4.8333335)
@@ -47,6 +48,10 @@ region = Rect2(10, 0, 10, 10)
 atlas = ExtResource("2_l5glv")
 region = Rect2(20, 0, 10, 10)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_iqq7w"]
+atlas = ExtResource("4_eoqba")
+region = Rect2(0, 0, 24, 24)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_e7voh"]
 animations = [{
 "frames": [{
@@ -88,10 +93,20 @@ animations = [{
 "loop": true,
 "name": &"player",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iqq7w")
+}],
+"loop": true,
+"name": &"powerup",
+"speed": 5.0
 }]
 
 [node name="Bullet" type="Area2D"]
 scale = Vector2(3, 3)
+collision_layer = 2
+collision_mask = 8
 script = ExtResource("1_l5glv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -101,9 +116,8 @@ shape = SubResource("RectangleShape2D_2abla")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.7666667, 0.7333333)
 sprite_frames = SubResource("SpriteFrames_e7voh")
-animation = &"enemy"
+animation = &"powerup"
 autoplay = "enemy"
-frame_progress = 0.6801348
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

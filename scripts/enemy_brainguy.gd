@@ -4,7 +4,7 @@ extends Area2D
 @export var bullet_speed:float = 900.0
 @export var bullet_damage:int = 1
 @export var bullet_scene: PackedScene
-
+@export var health:int=50
 @onready var muzzle_left:Marker2D = $Muzzle_Left
 @onready var muzzle_right:Marker2D = $Muzzle_Right
 @onready var fire_timer:Timer = $FireTimer
@@ -33,6 +33,7 @@ func _on_fire_timer_timeout() -> void:
 	if not _has_target or bullet_scene == null or not _player:
 		return
 	
+	var bullet_type:StringName = "default"
 	var b_left = bullet_scene.instantiate()
 	get_tree().current_scene.add_child(b_left)
 	b_left.global_position = muzzle_left.global_position
@@ -40,8 +41,9 @@ func _on_fire_timer_timeout() -> void:
 	b_left.collision_layer = 8
 	b_left.collision_mask = 1
 	var dir_left:= (_player.global_position - muzzle_left.global_position).normalized()
+	
 	if b_left.has_method("setup"):
-		b_left.call("setup", dir_left, bullet_speed, bullet_damage, self)
+		b_left.call("setup", dir_left, bullet_speed, bullet_damage,bullet_type, self)
 	
 	var b_right = bullet_scene.instantiate()
 	get_tree().current_scene.add_child(b_right)
@@ -51,7 +53,7 @@ func _on_fire_timer_timeout() -> void:
 	b_right.collision_mask = 1
 	var dir_right:=(_player.global_position - muzzle_right.global_position).normalized()
 	if b_right.has_method("setup"):
-		b_right.call("setup", dir_right, bullet_speed, bullet_damage, self)
+		b_right.call("setup", dir_right, bullet_speed, bullet_damage, bullet_type, self)
 	
 	
 
@@ -68,3 +70,10 @@ func _on_range_detector_body_exited(body: Node2D) -> void:
 		_has_target = false
 		_player = null
 		fire_timer.stop()
+
+
+func take_damage(amount:int)->void:
+	health -= abs(amount)
+	if health <0:
+		call_deferred("queue_free")
+	

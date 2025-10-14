@@ -2,6 +2,8 @@ extends Area2D
 
 enum State {PATROL, CHASE, DIVE, DEAD}
 
+@export var carry_coin:int =0
+@export var COIN_SCENE:PackedScene
 @export_group("Patrol")
 @export var patrol_radius: float = 120.0
 @export var patrol_speed: float = 1.0
@@ -95,16 +97,33 @@ func _dive(delta:float) ->void:
 func _explode() -> void:
 	if _state == State.DEAD:
 		return
+	if carry_coin>0:
+		var new_coin:=COIN_SCENE.instantiate()
+		new_coin.global_position = global_position
+		get_tree().current_scene.add_child(new_coin)
+	#var shoot_dir = (muzzle.global_position - muzzle_center.global_position).normalized()
+	#new_bullet.global_position = muzzle.global_position
+	#get_tree().current_scene.add_child(new_bullet)
+	#
+	#new_bullet.rotation = dir.angle()
+	#new_bullet.collision_layer = 2
+	#new_bullet.collision_mask = 8
+	#
+	#if new_bullet.has_method("setup"):
+		#new_bullet.call("setup", shoot_dir.normalized(), BULLET_SPEED, BULLET_DAMAGE, self)
+		
 	_state = State.DEAD
 	explosion_area.monitoring = true
 	sprite.play("explode")
-	await get_tree().create_timer(0.2).timeout
+	await sprite.animation_finished
 	queue_free()
 
 
 func _on_self_destruct_timeout() -> void:
 	_explode()
 
+func take_damage(amount:int)->void:
+	_explode()
 
 func _on_explosion_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player"):

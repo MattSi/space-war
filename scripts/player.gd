@@ -6,9 +6,11 @@ signal health_changed(new_value : int)
 signal score_changed(new_value : int)
 signal died()
 
-
+@export var is_powerup:bool = false
 @export var max_health:int = 5
-
+@export var invincibility_duration : float = 0.8
+@export var flash_interval : float = 0.08
+@export var hurt_tint :Color = Color(1, 0.6, 0.6, 1.0)
 @export var SPEED: float = 300.0
 @export var JUMP_VELOCITY: float = -600.0
 @export var JUMP_CUT_MULTIPLIER : float = 0.5
@@ -28,6 +30,10 @@ const MAX_JUMPS: int = 2
 @export var BULLET_SCENE:PackedScene
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var sfx_hurt:AudioStreamPlayer2D = $SfxHurt
+@onready var sfx_dead:AudioStreamPlayer2D = $SfxDead
+@onready var i_frame_timer:Timer = $IFramesTimer
+@onready var flash_timer:Timer = $FlashTimer
 @onready var muzzles:Node = $Muzzles
 
 var jumps_left: int = MAX_JUMPS
@@ -40,6 +46,7 @@ var health : set=set_health, get=get_health
 var _health : int = 0
 var _last_aim_dir:Vector2 = Vector2.RIGHT
 var _shoot_cd: float = 0.0
+var _base_modulate:Color = Color(1,1,1,1)
 
 var flap_h_shoot_mapping ={
 	0:180,
@@ -52,20 +59,31 @@ var flap_h_shoot_mapping ={
 	270:270
 }
 
+func _ready() -> void:
+	_base_modulate = animated_sprite_2d.modulate
+	health = max_health
+#	i_frame_timer.timeout.connect(_on_i_frames_timer_timeout)
+#	flash_timer.timeout.connect(_on_flash_timer_timeout)
+	
 func get_health()->int:
 	return _health
 	
 func set_health(amount: int)->void:
 	var clamped := clampi(amount, 0, max_health)
 	if clamped == _health:
-		# if there is no change, we can stop here
 		return
 	_health = clamped
 	emit_signal("health_changed", _health)
 	
 	if _health <=0:
 		emit_signal("died")
-
+		
+func take_damage(amount:int)->void:
+	if _is_invincible:
+		return
+	health -=abs(amount)
+	_play_hurt_feedback()
+	
 func _physics_process(delta: float) -> void:
 	var direction:float = 0.0
 	if is_dying:
@@ -198,8 +216,13 @@ func _shoot(dir:Vector2)->void:
 	new_bullet.collision_layer = 2
 	new_bullet.collision_mask = 8
 	
+	var anim_name:StringName = "default"
+	if is_powerup:
+		anim_name="powerup"
 	if new_bullet.has_method("setup"):
-		new_bullet.call("setup", shoot_dir.normalized(), BULLET_SPEED, BULLET_DAMAGE, self)
+		new_bullet.call("setup", shoot_dir.normalized(), BULLET_SPEED, BULLET_DAMAGE,anim_name, self)
+		
+	
 	
 
 func _get_muzzle_by_angle(angle_deg:int)->Marker2D:
@@ -213,8 +236,7 @@ func _get_muzzle_by_angle(angle_deg:int)->Marker2D:
 	
 func _muzzle_global_pos(dir:Vector2)->Vector2:
 	return global_position + Vector2(MUZZLE_OFFSET, 0.0).rotated(dir.angle())
-func _ready() -> void:
-	pass
+
 	
 	
 func _play_angle_anim(dir: Vector2)->int:
@@ -274,11 +296,33 @@ func _start_die()->void:
 	animated_sprite_2d.play("die")
 	
 func _play_hurt_feedback()->void:
+	# 1. Sound
+	if sfx_hurt and sfx_hurt.stream:
+		sfx_hurt.play()
+	# 2. invincibility on
+	_is_invincible = true
+	# 3. visual feedback: start flashing + tint
+	animated_sprite_2d.modulate = hurt_tint
+	flash_timer.wait_time = flash_interval	                       
+	flash_timer.start()
+	# 4. start i-frames timer
+	i_frame_timer.start(invincibility_duration)
 	pass
 	
-func take_damage(amount:int)->void:
-	if _is_invincible:
-		return
-	health -=abs(amount)
-	_play_hurt_feedback()
+
 	
+
+
+func _on_i_frames_timer_timeout() -> void:
+	_is_invincible = false
+	flash_timer.stop()
+	visible = true	
+	animated_sprite_2d.modulate = _base_modulate
+
+
+func _on_flash_timer_timeout() -> void:
+	visible = not visible
+
+func power_up()->void:
+	is_powerup = true
+	pass
