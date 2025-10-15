@@ -105,7 +105,6 @@ position = Vector2(1, -2)
 shape = SubResource("RectangleShape2D_ltlfu")
 
 [node name="RangeDetector" type="Area2D" parent="."]
-visible = false
 collision_layer = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RangeDetector"]

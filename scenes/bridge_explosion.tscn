@@ -1,0 +1,89 @@
+[gd_scene load_steps=13 format=3 uid="uid://dboeyxmicnj8s"]
+
+[ext_resource type="Script" uid="uid://b4bi4aml6hwdk" path="res://scripts/bridge_explosion.gd" id="1_36yjm"]
+[ext_resource type="Texture2D" uid="uid://cvuhakamiexma" path="res://assets/spritesheets/bridge_explosion.png" id="2_mynrm"]
+[ext_resource type="Texture2D" uid="uid://5qll5pa25eve" path="res://assets/SpritePack/Sprites/explosion64_2.png" id="3_gj8gj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e33k2"]
+atlas = ExtResource("2_mynrm")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7v13t"]
+atlas = ExtResource("2_mynrm")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0w2jf"]
+atlas = ExtResource("2_mynrm")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wh8ct"]
+atlas = ExtResource("3_gj8gj")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f7ra1"]
+atlas = ExtResource("3_gj8gj")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lp5r7"]
+atlas = ExtResource("3_gj8gj")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ugapo"]
+atlas = ExtResource("3_gj8gj")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_thjfs"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e33k2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7v13t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0w2jf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wh8ct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f7ra1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lp5r7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ugapo")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_na4lt"]
+size = Vector2(84.91667, 80.91667)
+
+[node name="Bridge_explosion" type="StaticBody2D"]
+collision_layer = 4
+script = ExtResource("1_36yjm")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_thjfs")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.1249994, 0.875)
+shape = SubResource("RectangleShape2D_na4lt")
+
+[node name="RayCast_Up" type="RayCast2D" parent="."]
+scale = Vector2(4, 4)
+target_position = Vector2(-0.25, -61.583336)
+
+[node name="Timer" type="Timer" parent="."]

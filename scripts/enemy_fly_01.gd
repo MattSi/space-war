@@ -36,7 +36,7 @@ var _velocity:Vector2 = Vector2.ZERO
 func _ready() -> void:
 	_origin = global_position + patrol_center_offset
 	explosion_area.monitoring = false
-	explosion_area.body_entered.connect(_on_explosion_area_body_entered)
+	
 	self_destruct_timer.wait_time = self_destruct_time
 	
 	
@@ -117,5 +117,11 @@ func take_damage(amount:int)->void:
 	_explode()
 
 func _on_explosion_area_body_entered(body: Node2D) -> void:
+	print("YYYYYYYYYYYYYYY")
+	if body.is_in_group("Player"):
+		body.call_deferred("take_damage", explode_damage)
+
+
+func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player"):
 		body.call_deferred("take_damage", explode_damage)

@@ -76,6 +76,7 @@ func set_health(amount: int)->void:
 	emit_signal("health_changed", _health)
 	
 	if _health <=0:
+		await _start_die()
 		emit_signal("died")
 		
 func take_damage(amount:int)->void:

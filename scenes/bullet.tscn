@@ -142,6 +142,7 @@ shape = SubResource("RectangleShape2D_2abla")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.7666667, 0.7333333)
 sprite_frames = SubResource("SpriteFrames_e7voh")
+animation = &"enemy"
 autoplay = "enemy"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

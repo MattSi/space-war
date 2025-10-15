@@ -16,7 +16,8 @@ const SFX:={
 	&"explode_player" : preload("res://assets/SpritePack/Sounds/explode.ogg"),
 	&"pickup" : preload("res://assets/Audio/pickup1.ogg"),
 	&"impactMetal" : preload("res://assets/Audio/impactMetal_004.ogg"),
-	&"laser_shot" : preload("res://assets/Audio/laserLarge_000.ogg")
+	&"laser_shot" : preload("res://assets/Audio/laserLarge_000.ogg"),
+	&"die":preload("res://assets/Audio/vgdeathsound.ogg")
 }
 
 

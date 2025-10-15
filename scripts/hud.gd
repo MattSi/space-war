@@ -24,6 +24,6 @@ func _on_health_changed(value:int)->void:
 func _on_scroe_changed(value:int)->void:
 	score_label.text = "Score: " + str(value)
 	
-func _on_player_died(value:int)->void:
+func _on_player_died()->void:
 	pass
 	

@@ -98,12 +98,12 @@ animations = [{
 size = Vector2(16.583334, 16.083334)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mmv66"]
-radius = 6.0
+radius = 14.098857
 
 [node name="Enemy_fly01" type="Area2D"]
 scale = Vector2(3, 3)
-collision_layer = 8
-collision_mask = 6
+collision_layer = 10
+collision_mask = 3
 script = ExtResource("1_ijk5f")
 patrol_center_offset = Vector2(10, 10)
 dive_speed = 300.0
@@ -124,4 +124,6 @@ shape = SubResource("CircleShape2D_mmv66")
 
 [node name="SelfDestruct" type="Timer" parent="."]
 
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="ExplosionArea" to="." method="_on_explosion_area_body_entered"]
 [connection signal="timeout" from="SelfDestruct" to="." method="_on_self_destruct_timeout"]
