@@ -36,8 +36,9 @@ func _on_timer_timeout() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	pass # Replace with function body.
+	if body.is_in_group("Player"):
+		body.call_deferred("take_damage", 1)
 
 
 func _on_area_entered(area: Area2D) -> void:
-	pass # Replace with function body.
+	pass

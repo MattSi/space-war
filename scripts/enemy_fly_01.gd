@@ -104,7 +104,7 @@ func _explode() -> void:
 	
 	AudioManager.play_at(&"explode_enemy", global_position)	
 	_state = State.DEAD
-	explosion_area.monitoring = true
+	explosion_area.monitoring = false
 	sprite.play("explode")
 	await sprite.animation_finished
 	queue_free()

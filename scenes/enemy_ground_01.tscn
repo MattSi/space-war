@@ -74,7 +74,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3nqis"]
-size = Vector2(1555, 41)
+size = Vector2(1302, 41)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_epk45"]
 size = Vector2(52, 43.5)
@@ -96,12 +96,11 @@ autoplay = "default"
 frame_progress = 0.71185607
 
 [node name="RangeDetector" type="Area2D" parent="."]
-visible = false
 position = Vector2(-3, -17)
 collision_layer = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RangeDetector"]
-position = Vector2(-276.5, -15)
+position = Vector2(-150, -15)
 shape = SubResource("RectangleShape2D_3nqis")
 
 [node name="ExplodeTimer" type="Timer" parent="."]

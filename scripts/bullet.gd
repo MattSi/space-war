@@ -27,9 +27,6 @@ func setup(dir:Vector2, spd:float, dmg:int, _animation:StringName, bullet_owner:
 	shooter = bullet_owner
 	animation.play(_animation)
 	
-	
-	
-
 
 func _on_area_entered(area: Area2D) -> void:
 	if area == shooter:

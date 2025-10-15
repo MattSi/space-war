@@ -4,7 +4,7 @@ extends Area2D
 @export var bullet_speed:float = 900.0
 @export var bullet_damage:int = 1
 @export var bullet_scene: PackedScene
-@export var health:int=50
+@export var health:int=3
 @onready var muzzle_left:Marker2D = $Muzzle_Left
 @onready var muzzle_right:Marker2D = $Muzzle_Right
 @onready var fire_timer:Timer = $FireTimer
@@ -41,8 +41,7 @@ func _on_fire_timer_timeout() -> void:
 	b_left.global_rotation = muzzle_left.global_rotation	
 	b_left.collision_layer = 8
 	b_left.collision_mask = 1
-	var dir_left:= (_player.global_position - muzzle_left.global_position).normalized()
-	
+	var dir_left:= (_player.global_position - muzzle_left.global_position).normalized()	
 	if b_left.has_method("setup"):
 		b_left.call("setup", dir_left, bullet_speed, bullet_damage,bullet_type, self)
 	
@@ -74,8 +73,9 @@ func _on_range_detector_body_exited(body: Node2D) -> void:
 
 
 func take_damage(amount:int)->void:
+	print("uuuuuuuuuuuuuuuuuuuuuuuuu: %d" %amount)
 	health -= abs(amount)
-	if health <0:
+	if health <=0:
 		await _explode()
 		call_deferred("queue_free")
 	
