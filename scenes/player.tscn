@@ -348,6 +348,7 @@ COYOTE_TIME = 0.06
 BULLET_SCENE = ExtResource("2_dqkch")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." groups=["Player"]]
+texture_filter = 1
 position = Vector2(0.4, -13.2)
 sprite_frames = SubResource("SpriteFrames_smehm")
 animation = &"idle_45"

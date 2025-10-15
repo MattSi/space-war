@@ -7,7 +7,7 @@ signal score_changed(new_value : int)
 signal died()
 
 @export var is_powerup:bool = false
-@export var max_health:int = 5
+@export var max_health:int = 100
 @export var invincibility_duration : float = 0.8
 @export var flash_interval : float = 0.08
 @export var hurt_tint :Color = Color(1, 0.6, 0.6, 1.0)

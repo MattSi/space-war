@@ -1,4 +1,10 @@
-[gd_scene format=3 uid="uid://ce7ttlbm23wnx"]
+[gd_scene load_steps=4 format=3 uid="uid://ce7ttlbm23wnx"]
+
+[ext_resource type="Script" uid="uid://byqepp85fwj2f" path="res://scripts/main_menu.gd" id="1_ekxnf"]
+[ext_resource type="Texture2D" uid="uid://bmxrphp8d012o" path="res://assets/spritesheets/cover.png" id="1_l6cm7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ekxnf"]
+texture = ExtResource("1_l6cm7")
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -7,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ekxnf")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -15,26 +22,43 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ekxnf")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -16.5
-offset_top = -16.0
-offset_right = 16.5
-offset_bottom = 16.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -186.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="BtnStart" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.76894593, 0.950452, 0.4530759, 1)
+theme_override_font_sizes/font_size = 40
+text = "Start
 
-[node name="BtnOptions" type="Button" parent="VBoxContainer"]
-layout_mode = 2
+"
 
-[node name="BtnQuit" type="Button" parent="VBoxContainer"]
+[node name="BtnOption" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.76894593, 0.950452, 0.4530759, 1)
+theme_override_font_sizes/font_size = 40
+text = "Option
+
+"
+
+[node name="BtnExit" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76894593, 0.950452, 0.4530759, 1)
+theme_override_font_sizes/font_size = 40
+text = "Exit
+
+"
+
+[connection signal="pressed" from="VBoxContainer/BtnStart" to="." method="_on_btn_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/BtnExit" to="." method="_on_btn_exit_pressed"]
