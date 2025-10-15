@@ -19,6 +19,6 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		if body.has_method("power_up"):
 			body.call("power_up",)
 		AudioManager.play_at(&"pickup", global_position)
-		$Area2D.monitoring = false
+		$Area2D.set_deferred("monitoring" , false)
 		call_deferred("queue_free")
 		

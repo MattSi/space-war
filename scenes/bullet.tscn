@@ -77,6 +77,32 @@ animations = [{
 "texture": SubResource("AtlasTexture_s437g")
 }],
 "loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qncy5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tamys")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_26lx3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1cfmv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k76ql")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_in4mv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s437g")
+}],
+"loop": true,
 "name": &"enemy",
 "speed": 5.0
 }, {
@@ -116,7 +142,6 @@ shape = SubResource("RectangleShape2D_2abla")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.7666667, 0.7333333)
 sprite_frames = SubResource("SpriteFrames_e7voh")
-animation = &"powerup"
 autoplay = "enemy"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

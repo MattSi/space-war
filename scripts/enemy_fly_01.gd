@@ -99,8 +99,8 @@ func _explode() -> void:
 		return
 	if carry_coin>0:
 		var new_coin:=COIN_SCENE.instantiate()
-		new_coin.global_position = global_position
-		get_tree().current_scene.add_child(new_coin)
+		new_coin.global_position = global_position		
+		get_tree().current_scene.call_deferred("add_child", new_coin)
 	
 	AudioManager.play_at(&"explode_enemy", global_position)	
 	_state = State.DEAD
