@@ -82,7 +82,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ltlfu"]
-size = Vector2(44.5, 42)
+size = Vector2(86.625, 79.5)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vk0sh"]
 radius = 652.6722
@@ -97,14 +97,15 @@ bullet_scene = ExtResource("2_tekfq")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 11)
 sprite_frames = SubResource("SpriteFrames_fmnd0")
-animation = &"explode"
+animation = &"normal"
 autoplay = "normal"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, -2)
+position = Vector2(0.6875, 13.25)
 shape = SubResource("RectangleShape2D_ltlfu")
 
 [node name="RangeDetector" type="Area2D" parent="."]
+visible = false
 collision_layer = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RangeDetector"]
