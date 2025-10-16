@@ -6,7 +6,7 @@ extends Node
 @onready var sfx_player:AudioStreamPlayer2D = $SFXPlayer
 
 const MUSIC:={
-	&"level1":preload("res://assets/Audio/The Only Thing They Fear Is You.mp3")
+	&"level1":preload("res://assets/Audio/MatthewPablo/Orbital Colossus.mp3")
 }
 const SFX:={
 	&"jump" :      preload("res://assets/Audio/sfx_jump.ogg"),

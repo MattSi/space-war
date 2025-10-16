@@ -61,4 +61,5 @@ text = "Exit
 "
 
 [connection signal="pressed" from="VBoxContainer/BtnStart" to="." method="_on_btn_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/BtnOption" to="." method="_on_btn_option_pressed"]
 [connection signal="pressed" from="VBoxContainer/BtnExit" to="." method="_on_btn_exit_pressed"]

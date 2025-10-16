@@ -1,7 +1,8 @@
 extends Node
 
-@export var level1:PackedScene = preload("res://scenes/playground.tscn")
-@export var main_menu:PackedScene = preload("res://scenes/main_menu.tscn")
+@export var level1:PackedScene = preload("res://levels/level1.tscn")
+@export var level2:PackedScene = preload("res://levels/level2.tscn")
+@export var main_menu:PackedScene = preload("res://levels/main_menu.tscn")
 
 func	 _ready() -> void:
 	_connect_player_signals()

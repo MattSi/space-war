@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dmdvh7loggm8u"
+path="res://.godot/imported/Orbital Colossus.mp3-61e276d02a7608acba92dc0cd80fa386.mp3str"
+
+[deps]
+
+source_file="res://assets/Audio/MatthewPablo/Orbital Colossus.mp3"
+dest_files=["res://.godot/imported/Orbital Colossus.mp3-61e276d02a7608acba92dc0cd80fa386.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
