@@ -141,15 +141,17 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_axis * SPEED
 		_face(move_axis)
 
+		var facing_x := -1.0 if animated_sprite_2d.flip_h else 1.0
 		var ls := Input.get_vector("mv_left", "mv_right", "mv_up", "mv_down")
 		if ls.length() >= AIM_DEADZONE:
 			aim_dir = ls.normalized()
 			_last_aim_dir = aim_dir
-		else:
+		elif aim_dir.x * facing_x < 0.0:
 			# No aim input: keep the last aim, mirrored to match the facing side
-			var facing_x := -1.0 if animated_sprite_2d.flip_h else 1.0
-			if aim_dir.x * facing_x < 0.0:
-				aim_dir.x = -aim_dir.x
+			aim_dir.x = -aim_dir.x
+		# There is no straight-down sprite or muzzle: aim down-forward instead
+		if aim_dir.y > 0.0 and absf(aim_dir.x) < 0.38:
+			aim_dir = Vector2(facing_x, 1.0).normalized()
 	else:
 		direction = Input.get_axis("move_left","move_right")
 		if direction != 0.0:
@@ -183,7 +185,11 @@ func _physics_process(delta: float) -> void:
 		did_shoot = true
 	#Animation
 	if lt:
-		if not did_shoot:
+		# There are no run-and-aim frames: show legs running while moving,
+		# and the aim pose only when standing still or in the air
+		if is_on_floor() and absf(velocity.x) > 0.0:
+			_safe_play("run")
+		elif not did_shoot:
 			var angle_anim:int = _play_angle_anim(aim_dir)
 			var anim_pfix:="idle_"			
 			_safe_play(anim_pfix+str(angle_anim))
