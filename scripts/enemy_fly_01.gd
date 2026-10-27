@@ -58,21 +58,21 @@ func _process(delta: float) -> void:
 			_try_start_dive()
 		State.DIVE:
 			_dive(delta)
-	position += _velocity * delta
+	global_position += _velocity * delta
 	
 	if _velocity.x !=0:
 		sprite.flip_h = _velocity.x>0
 	
 func _try_detect_player()->void:
-	if _player and position.distance_to(_player.global_position) < detect_range:
+	if _player and global_position.distance_to(_player.global_position) < detect_range:
 		_state = State.CHASE
 		
 func _patrol(delta: float) ->void:
 	_theta += patrol_speed * delta
-	position = _origin + Vector2(cos(_theta), sin(_theta)) * patrol_radius
+	global_position = _origin + Vector2(cos(_theta), sin(_theta)) * patrol_radius
 	
 func _try_start_dive()->void:
-	if _player and position.distance_to(_player.global_position)<dive_trigger_dist:
+	if _player and global_position.distance_to(_player.global_position)<dive_trigger_dist:
 		_state = State.DIVE
 		self_destruct_timer.start()
 		
@@ -83,15 +83,15 @@ func _find_player_if_needed()->void:
 func _chase(delte:float)->void:
 	if not _player:
 		return
-	var dir = (_player.global_position - position).normalized()
+	var dir = (_player.global_position - global_position).normalized()
 	_velocity = dir * 200.0
 
 func _dive(delta:float) ->void:
 	if not _player:
 		return
-	var dir = (_player.global_position - position).normalized()
+	var dir = (_player.global_position - global_position).normalized()
 	_velocity = _velocity.move_toward(dir * dive_speed, dive_accel*delta)
-	if position.distance_to(_player.global_position) < explode_radius*0.8:
+	if global_position.distance_to(_player.global_position) < explode_radius*0.8:
 		_explode()
 	
 func _explode() -> void:
@@ -117,7 +117,6 @@ func take_damage(amount:int)->void:
 	_explode()
 
 func _on_explosion_area_body_entered(body: Node2D) -> void:
-	print("YYYYYYYYYYYYYYY")
 	if body.is_in_group("Player"):
 		body.call_deferred("take_damage", explode_damage)
 

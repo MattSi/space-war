@@ -13,6 +13,7 @@ extends Area2D
 
 var _has_target:bool = false
 var _player:Node2D = null
+var _dead:bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,7 +23,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if _has_target and _player and is_instance_valid(_player):
+	if not _dead and _has_target and _player and is_instance_valid(_player):
 		# Sprite faces down (+Y), so subtract 90° to point it at the player
 		rotation = (_player.global_position - global_position).angle() - PI / 2
 
@@ -31,7 +32,7 @@ func _process(delta: float) -> void:
 
 func _on_fire_timer_timeout() -> void:
 	# Shoot
-	if not _has_target or bullet_scene == null or not _player:
+	if _dead or not _has_target or bullet_scene == null or not _player:
 		return
 	
 	var bullet_type:StringName = "default"
@@ -58,6 +59,8 @@ func _on_fire_timer_timeout() -> void:
 	
 
 func _on_range_detector_body_entered(body: Node2D) -> void:
+	if _dead:
+		return
 	if body.is_in_group("Player"):
 		_has_target = true
 		_player = body
@@ -73,13 +76,16 @@ func _on_range_detector_body_exited(body: Node2D) -> void:
 
 
 func take_damage(amount:int)->void:
-	print("uuuuuuuuuuuuuuuuuuuuuuuuu: %d" %amount)
+	if _dead:
+		return
 	health -= abs(amount)
 	if health <=0:
-		await _explode()
-		call_deferred("queue_free")
-	
+		_explode()
+
 func _explode()->void:
+	_dead = true
+	fire_timer.stop()
 	animated_sprite_2d.play("explode")
-	await  animated_sprite_2d.animation_finished
+	await animated_sprite_2d.animation_finished
+	queue_free()
 	

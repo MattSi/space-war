@@ -13,6 +13,7 @@ const JUMP_VELOCITY = -400.0
 # Muzzle position when facing right; x is mirrored when facing left
 const MUZZLE_OFFSET := Vector2(30, -40)
 var direction: int=1
+var _dead: bool = false
 
 func _ready() -> void:
 	_set_direction(direction)
@@ -26,6 +27,10 @@ func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+	if _dead:
+		velocity.x = 0.0
+		move_and_slide()
+		return
 	if ray_right.is_colliding():
 		_set_direction(-1)
 	if ray_left.is_colliding():
@@ -37,6 +42,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_shoot_timer_timeout() -> void:
+	if _dead:
+		return
 	var bullet_type:StringName = "default"
 	var b = BULLET_SCENE.instantiate()
 	get_tree().current_scene.add_child(b)
@@ -50,9 +57,11 @@ func _on_shoot_timer_timeout() -> void:
 
 
 func _explode() -> void:
-
-	AudioManager.play_at(&"explode_enemy", global_position)	
-	#velocity.x=velocity.y=0
+	if _dead:
+		return
+	_dead = true
+	$ShootTimer.stop()
+	AudioManager.play_at(&"explode_enemy", global_position)
 	$Area2D.monitoring = true
 	sprite.play("dead")
 	await sprite.animation_finished

@@ -10,7 +10,7 @@ const JUMP_VELOCITY = -400.0
 @onready var range: Area2D = $RangeDetector
 @onready var t_explode: Timer = $ExplodeTimer
 
-enum State {IDLE, CHARGE}
+enum State {IDLE, CHARGE, DEAD}
 var state:State = State.IDLE
 
 var player:Node2D = null
@@ -23,7 +23,7 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * gravity_scale * delta
 	
 	match state:
-		State.IDLE:
+		State.IDLE, State.DEAD:
 			velocity.x = 0.0
 		State.CHARGE:
 			velocity.x = charge_dir * speed
@@ -51,8 +51,11 @@ func _on_range_detector_body_exited(body: Node2D) -> void:
 		player = null
 	
 func _explode()->void:
-	state = State.IDLE
-	velocity = Vector2.ZERO	
+	if state == State.DEAD:
+		return
+	state = State.DEAD
+	t_explode.stop()
+	velocity = Vector2.ZERO
 	AudioManager.play_at(&"explode_enemy", global_position)
 	sprite.play("explode")
 	await sprite.animation_finished
@@ -64,12 +67,9 @@ func _on_explode_timer_timeout() -> void:
 
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
+	if state == State.DEAD:
+		return
 	if body == player:
 		player.take_damage(1)
-		t_explode.stop()
-		velocity	 = Vector2.ZERO
-		AudioManager.play_at(&"explode_enemy", global_position)
-		sprite.play("explode")
-		await sprite.animation_finished
-		queue_free()
-	
+		_explode()
+
