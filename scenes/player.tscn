@@ -405,6 +405,5 @@ one_shot = true
 [node name="FlashTimer" type="Timer" parent="."]
 wait_time = 0.08
 
-[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="timeout" from="IFramesTimer" to="." method="_on_i_frames_timer_timeout"]
 [connection signal="timeout" from="FlashTimer" to="." method="_on_flash_timer_timeout"]

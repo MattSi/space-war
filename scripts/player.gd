@@ -78,13 +78,14 @@ func set_health(amount: int)->void:
 	emit_signal("health_changed", _health)
 	
 	if _health <=0:
-		await _start_die()
-		emit_signal("died")
-		
+		_start_die()
+
 func take_damage(amount:int)->void:
-	if _is_invincible:
+	if _is_invincible or is_dying:
 		return
 	health -=abs(amount)
+	if is_dying:
+		return
 	_play_hurt_feedback()
 	
 func _physics_process(delta: float) -> void:
@@ -290,25 +291,22 @@ func _safe_play(anim_name: String) -> void:
 		if animated_sprite_2d.animation != anim_name:
 			animated_sprite_2d.play(anim_name)
 
-func _on_animated_sprite_2d_animation_finished() -> void:
-	if is_dying and animated_sprite_2d.animation == "die":
-		is_dying = false
-		jumps_left = MAX_JUMPS
-		
-		if is_on_floor():
-			var direction := Input.get_axis("move_left", "move_right")
-			if direction == 0:
-				animated_sprite_2d.play("idle")
-			else:
-				animated_sprite_2d.play("run")
-		else:
-			animated_sprite_2d.play("jump")
-
 func _start_die()->void:
+	if is_dying:
+		return
 	is_dying = true
 	velocity = Vector2.ZERO
-	
+
+	# Cancel hurt feedback so the death animation is fully visible
+	_is_invincible = false
+	i_frame_timer.stop()
+	flash_timer.stop()
+	visible = true
+	animated_sprite_2d.modulate = _base_modulate
+
 	animated_sprite_2d.play("die")
+	await animated_sprite_2d.animation_finished
+	died.emit()
 	
 func _play_hurt_feedback()->void:
 	# 1. Sound
