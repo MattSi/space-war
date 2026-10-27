@@ -1,3 +1,15 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Web export output (publish it via GitHub Releases or Pages instead)
+/build/
+
+# Godot editor temp files from interrupted saves
+*.tmp
+
+# Windows thumbnail cache
+Thumbs.db
+
+# Personal editor settings (machine-specific paths)
+.vscode/settings.json
