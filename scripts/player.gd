@@ -24,6 +24,7 @@ const MAX_JUMPS: int = 2
 @export var RUN_WHEN_AIMING:bool = false
 
 @export var SHOOT_COOLDOWN:float = 0.12
+@export var SHOOT_ANIM_HOLD:float = 0.2
 @export var BULLET_SPEED:float = 900.0
 @export var BULLET_DAMAGE:int = 1
 @export var MUZZLE_OFFSET:float=16.0
@@ -46,6 +47,7 @@ var health : set=set_health, get=get_health
 var _health : int = 0
 var _last_aim_dir:Vector2 = Vector2.RIGHT
 var _shoot_cd: float = 0.0
+var _shoot_anim_left: float = 0.0
 var _base_modulate:Color = Color(1,1,1,1)
 
 var flap_h_shoot_mapping ={
@@ -169,10 +171,15 @@ func _physics_process(delta: float) -> void:
 
 	#Shooting
 	_shoot_cd = max(_shoot_cd -delta, 0.0)
+	_shoot_anim_left = max(_shoot_anim_left - delta, 0.0)
 	var rt:=Input.get_action_strength("shoot_rt")>=0.5
 	var did_shoot:bool = false
-	if lt and rt:
-		_shoot(aim_dir)		
+	if rt:
+		if lt:
+			_shoot(aim_dir)
+		else:
+			# Not aiming: fire straight ahead in the facing direction
+			_shoot(Vector2.LEFT if animated_sprite_2d.flip_h else Vector2.RIGHT)
 		did_shoot = true
 	#Animation
 	if lt:
@@ -184,7 +191,9 @@ func _physics_process(delta: float) -> void:
 		direction = Input.get_axis("move_left", "move_right")
 		if is_on_floor():
 			if direction == 0:
-				_safe_play("idle") 
+				# Let the shoot animation show briefly before going back to idle
+				if _shoot_anim_left <= 0.0:
+					_safe_play("idle")
 			else:
 				_safe_play("run")
 		else:
@@ -209,6 +218,7 @@ func _shoot(dir:Vector2)->void:
 	var muzzle_center:Marker2D = muzzles.get_node("Muzzle_Center")
 	var anim_pfix:="shoot_"
 	_shoot_cd = SHOOT_COOLDOWN
+	_shoot_anim_left = SHOOT_ANIM_HOLD
 	_safe_play(anim_pfix+str(angle_anim))
 	
 	var new_bullet:=BULLET_SCENE.instantiate()
