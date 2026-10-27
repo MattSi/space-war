@@ -10,20 +10,26 @@ const JUMP_VELOCITY = -400.0
 @onready var ray_left:RayCast2D = $RayLeft
 @onready var ray_right:RayCast2D = $RayRight
 @onready var sprite:AnimatedSprite2D = $AnimatedSprite2D
-var muzzle_offset:=Vector2(-30, -40)
+# Muzzle position when facing right; x is mirrored when facing left
+const MUZZLE_OFFSET := Vector2(30, -40)
 var direction: int=1
+
+func _ready() -> void:
+	_set_direction(direction)
+
+# The sprite art faces left, so flip it when walking right
+func _set_direction(dir: int) -> void:
+	direction = dir
+	animated_sprite_2d.flip_h = dir > 0
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	if ray_right.is_colliding():
-		direction = -1
-		muzzle_offset.x = -muzzle_offset.x
-		animated_sprite_2d.flip_h = false
+		_set_direction(-1)
 	if ray_left.is_colliding():
-		direction = 1
-		animated_sprite_2d.flip_h = true
+		_set_direction(1)
 
 	velocity.x = direction * SPEED
 
@@ -34,7 +40,7 @@ func _on_shoot_timer_timeout() -> void:
 	var bullet_type:StringName = "default"
 	var b = BULLET_SCENE.instantiate()
 	get_tree().current_scene.add_child(b)
-	b.global_position = global_position + muzzle_offset
+	b.global_position = global_position + Vector2(MUZZLE_OFFSET.x * direction, MUZZLE_OFFSET.y)
 	b.global_rotation = global_rotation	
 	b.collision_layer = 8
 	b.collision_mask = 5

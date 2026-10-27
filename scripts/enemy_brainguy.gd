@@ -23,8 +23,8 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if _has_target and _player and is_instance_valid(_player):
-		var dir:= (_player.global_position - global_position).angle()-90
-		rotation = dir
+		# Sprite faces down (+Y), so subtract 90° to point it at the player
+		rotation = (_player.global_position - global_position).angle() - PI / 2
 
 
 
