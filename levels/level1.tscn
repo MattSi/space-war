@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://dhqartky7mott"]
+[gd_scene load_steps=17 format=4 uid="uid://dhqartky7mott"]
 
 [ext_resource type="PackedScene" uid="uid://bx8aybosm7dul" path="res://scenes/player.tscn" id="1_hddm4"]
 [ext_resource type="PackedScene" uid="uid://dd0hw8cuoxn5o" path="res://scenes/enemy_robot.tscn" id="2_qchbg"]
@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://o6nt8wl7swjc" path="res://scenes/enemy_ground_01.tscn" id="12_osidk"]
 [ext_resource type="PackedScene" uid="uid://q3kevrgghxvy" path="res://scenes/coin.tscn" id="13_rlvb3"]
 [ext_resource type="PackedScene" uid="uid://dboeyxmicnj8s" path="res://scenes/bridge_explosion.tscn" id="14_k63md"]
+[ext_resource type="PackedScene" path="res://scenes/checkpoint.tscn" id="cp_scene"]
+[ext_resource type="PackedScene" path="res://scenes/goal.tscn" id="goal_scene"]
 
 [node name="Playground" type="Node2D"]
 
@@ -253,3 +255,19 @@ position = Vector2(8097, 369)
 
 [node name="Bridge_explosion4" parent="." instance=ExtResource("14_k63md")]
 position = Vector2(8185, 369)
+
+[node name="Checkpoint1" parent="." instance=ExtResource("cp_scene")]
+position = Vector2(-1600, 490)
+
+[node name="Checkpoint2" parent="." instance=ExtResource("cp_scene")]
+position = Vector2(2200, 490)
+
+[node name="Checkpoint3" parent="." instance=ExtResource("cp_scene")]
+position = Vector2(4800, 490)
+
+[node name="Checkpoint4" parent="." instance=ExtResource("cp_scene")]
+position = Vector2(8450, 190)
+
+[node name="Goal" parent="." instance=ExtResource("goal_scene")]
+position = Vector2(9530, 190)
+next_level = "res://levels/level2.tscn"

@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/goal.gd" id="1_goal"]
+[ext_resource type="Texture2D" uid="uid://yb2ncvvqhjbd" path="res://assets/spritesheets/oga-swm-objectsandenemies-sheet-alpha.png" id="2_sheet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_goal"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 420, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_goal"]
+size = Vector2(100, 200)
+
+[node name="Goal" type="Area2D"]
+collision_layer = 0
+script = ExtResource("1_goal")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -70)
+scale = Vector2(5, 5)
+texture = SubResource("AtlasTexture_goal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -100)
+shape = SubResource("RectangleShape2D_goal")

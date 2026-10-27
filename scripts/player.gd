@@ -7,7 +7,7 @@ signal score_changed(new_value : int)
 signal died()
 
 @export var is_powerup:bool = false
-@export var max_health:int = 100
+@export var max_health:int = 5
 @export var invincibility_duration : float = 0.8
 @export var flash_interval : float = 0.08
 @export var hurt_tint :Color = Color(1, 0.6, 0.6, 1.0)
@@ -64,8 +64,8 @@ var flap_h_shoot_mapping ={
 func _ready() -> void:
 	_base_modulate = animated_sprite_2d.modulate
 	health = max_health
-#	i_frame_timer.timeout.connect(_on_i_frames_timer_timeout)
-#	flash_timer.timeout.connect(_on_flash_timer_timeout)
+	# Hooks up death handling and moves us to the last checkpoint
+	GameManager.register_player(self)
 	
 func get_health()->int:
 	return _health

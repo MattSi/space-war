@@ -12,6 +12,7 @@ func _process(delta: float) -> void:
 
 
 func _on_btn_start_pressed() -> void:
+	GameManager.reset_progress()
 	get_tree().change_scene_to_file("res://levels/level1.tscn")
 
 
@@ -20,4 +21,5 @@ func _on_btn_exit_pressed() -> void:
 
 
 func _on_btn_option_pressed() -> void:
+	GameManager.reset_progress()
 	get_tree().change_scene_to_file("res://levels/level2.tscn")
