@@ -21,7 +21,7 @@ const MAX_JUMPS: int = 2
 @export var AIM_DEADZONE:float = 0.25
 @export var AIM_SECTORS:int = 16
 @export var USE_MIRROS_FRAMES:bool = true
-@export var RUN_WHEN_AIMING:bool = false
+@export var RUN_WHEN_AIMING:bool = true
 
 @export var SHOOT_COOLDOWN:float = 0.12
 @export var SHOOT_ANIM_HOLD:float = 0.2
@@ -135,26 +135,28 @@ func _physics_process(delta: float) -> void:
 	var aim_dir:=_last_aim_dir
 	
 	if lt:
-		var ls := Input.get_vector("mv_left", "mv_right", "mv_up", "mv_down")
-		if ls.length() >= AIM_DEADZONE:
-			aim_dir = ls.normalized()
-			_last_aim_dir = aim_dir
-		
 		var move_axis :=0.0
 		if RUN_WHEN_AIMING:
 			move_axis = Input.get_axis("move_left", "move_right")
 		velocity.x = move_axis * SPEED
+		_face(move_axis)
+
+		var ls := Input.get_vector("mv_left", "mv_right", "mv_up", "mv_down")
+		if ls.length() >= AIM_DEADZONE:
+			aim_dir = ls.normalized()
+			_last_aim_dir = aim_dir
+		else:
+			# No aim input: keep the last aim, mirrored to match the facing side
+			var facing_x := -1.0 if animated_sprite_2d.flip_h else 1.0
+			if aim_dir.x * facing_x < 0.0:
+				aim_dir.x = -aim_dir.x
 	else:
 		direction = Input.get_axis("move_left","move_right")
 		if direction != 0.0:
-			velocity.x = direction * SPEED			
+			velocity.x = direction * SPEED
 		else:
 			velocity.x = move_toward(velocity.x, 0, SPEED)
-		
-		if direction > 0:
-			animated_sprite_2d.flip_h = false
-		elif direction < 0:
-			animated_sprite_2d.flip_h = true
+		_face(direction)
 	
 	move_and_slide()
 	
@@ -197,6 +199,13 @@ func _physics_process(delta: float) -> void:
 		else:
 			
 			_safe_play("jump")
+
+# Turn the sprite toward the movement direction (no change when standing still)
+func _face(move_dir: float) -> void:
+	if move_dir > 0:
+		animated_sprite_2d.flip_h = false
+	elif move_dir < 0:
+		animated_sprite_2d.flip_h = true
 
 func _shoot(dir:Vector2)->void:
 	if _shoot_cd > 0.0:
