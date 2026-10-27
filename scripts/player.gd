@@ -96,9 +96,6 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 
-	if Input.is_action_just_pressed("test_action"):
-		_start_die()
-		return		
 	
 	was_on_floor = is_on_floor()
 	
